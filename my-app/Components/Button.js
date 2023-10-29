@@ -9,7 +9,7 @@ const Button = () => (
     onPress={() => console.log('Pressed')}
     style={{
       left: 20,
-      top: 20
+      bottom: 250
     }}
   />
 );
