@@ -1,0 +1,19 @@
+{
+    "catches":[
+        {
+            "date": "12/31/2023",
+            "species": "Pink salmon",
+            "location": "6"
+        },
+        {
+            "date": "10/10/2012",
+            "species": "choho salmon",
+            "location": "3"
+        },
+        {
+            "date": "12/31/2021",
+            "species": "Pink salmon",
+            "location": "12"
+        }
+    ]
+}
