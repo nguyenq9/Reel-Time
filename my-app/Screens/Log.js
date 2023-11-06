@@ -16,9 +16,9 @@ const Log = () => {
               <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>Location</Text>
           </View>
       </View>
-    {Data.catches.map( item => {
+    {Data.catches.map( (item, i) => {
       return(
-        <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
+        <View style={{ flexDirection: 'row', paddingBottom: 10 }} key={i}>
           <View style={{ width: "22%", backgroundColor: 'lightyellow'}}>
               <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>{item.date}</Text>
           </View>
