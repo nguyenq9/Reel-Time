@@ -8,6 +8,7 @@ import Map from "./Screens/Map";
 import Log from "./Screens/Log";
 import Add from "./Screens/Add";
 import Home from "./Screens/Home";
+import Settings from "./Screens/Settings"
 
 const Tab = createBottomTabNavigator();
 
@@ -75,7 +76,8 @@ function MyTabs() {
               name="account-circle" 
               size={50} 
               margin={10}
-              onPress={() => console.log("ACCOUNT SETTING")}
+              //onPress={() => console.log("ACCOUNT SETTING")}
+              onPress={() => navigation.navigate('Settings')}
               color={"#213c96"}
               // color={'white'}
               // backgroundColor={'white'}
@@ -83,6 +85,25 @@ function MyTabs() {
           ),
           
         }}
+      />
+      <Tab.Screen 
+        name="Settings" 
+        component={Settings} 
+        options={{
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        tabBarStyle: { display: "none" },
+        tabBarLabel: "Settings",
+        headerLeft: () => (
+          <MaterialCommunityIcons 
+            name="chevron-triple-left" 
+            size={40} 
+            margin={10}
+            onPress={() => navigation.navigate('Home')}
+
+            />
+        ),
+      }} 
       />
       <Tab.Screen
         name="Log"
