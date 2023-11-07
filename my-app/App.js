@@ -9,6 +9,7 @@ import Log from "./Screens/Log";
 import Add from "./Screens/Add";
 import Home from "./Screens/Home";
 import Settings from "./Screens/Settings"
+import FAQ from "./Screens/FAQ"
 
 const Tab = createBottomTabNavigator();
 
@@ -100,6 +101,34 @@ function MyTabs() {
             size={40} 
             margin={10}
             onPress={() => navigation.navigate('Home')}
+
+            />
+        ),
+        headerRight: () => (
+          <MaterialCommunityIcons 
+            name="help" 
+            size={40} 
+            margin={10}
+            onPress={() => navigation.navigate('FAQ')}
+
+            />
+        ),
+      }} 
+      />
+      <Tab.Screen 
+        name="FAQ" 
+        component={FAQ} 
+        options={{
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        tabBarStyle: { display: "none" },
+        tabBarLabel: "FAQ",
+        headerLeft: () => (
+          <MaterialCommunityIcons 
+            name="chevron-triple-left" 
+            size={40} 
+            margin={10}
+            onPress={() => navigation.navigate('Settings')}
 
             />
         ),
