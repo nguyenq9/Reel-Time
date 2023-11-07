@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, ScrollView, Button } from "react-native";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Button,
+} from "react-native";
+import DatePicker from "react-native-modern-datepicker";
 
 function Add() {
   const [text, onChangeText] = useState("");
   const [number, onChangeNumber] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -30,7 +38,7 @@ function Add() {
   // Add to database
   const handleSubmit = () => {
     console.log("Submit");
-  }
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -42,7 +50,7 @@ function Add() {
           value={text}
           placeholder="Enter species"
         />
-        
+
         <Text style={styles.label}>Quantity</Text>
         <TextInput
           style={styles.input}
@@ -78,26 +86,36 @@ function Add() {
           placeholder="Enter width"
           keyboardType="numeric"
         />
-        
+
         <Text style={styles.label}>Date</Text>
         <TouchableWithoutFeedback onPress={showDatePicker}>
           <View style={styles.dateInput}>
-            <Text>{selectedDate.toDateString()}</Text>
+            <Text>{selectedDate}</Text>
           </View>
         </TouchableWithoutFeedback>
-
-        <Button title="Submit" onPress={() => {}} style={styles.submitButton} />
-        
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="date"
-          onConfirm={handleConfirm}
-          onCancel={hideDatePicker}
-        />
+        <DatePicker
+              mode="datepicker"
+              style={
+                isDatePickerVisible ? datepickerstyle : datepickerstylecollapsed
+              }
+              onDateChange={(date) => {
+                setSelectedDate(date);
+                hideDatePicker();
+              }}
+            />
       </View>
+      <Button title="Submit" onPress={() => {console.log("Submitting")}} style={styles.submitButton} /> 
     </ScrollView>
   );
 }
+
+const datepickerstyle = StyleSheet.create({
+  height: 400,
+});
+
+const datepickerstylecollapsed = StyleSheet.create({
+  height: 0,
+});
 
 const styles = StyleSheet.create({
   container: {
@@ -124,12 +142,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   submitButton: {
-    backgroundColor: "black",
+    backgroundColor: "red",
     margin: 15,
     padding: 15,
     paddingTop: 10,
+    width: 10,
     alignItems: "center",
-  }
+  },
 });
 
 export default Add;
