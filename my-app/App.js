@@ -10,6 +10,9 @@ import Add from "./Screens/Add";
 import Home from "./Screens/Home";
 import Settings from "./Screens/Settings"
 import FAQ from "./Screens/FAQ"
+import Login from "./Screens/Login"
+import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import Signup from "./Screens/Signup";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +20,7 @@ function MyTabs() {
   const navigation = useNavigation();
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Login"
 
       screenOptions={
         ({ route }) => ({
@@ -33,9 +36,30 @@ function MyTabs() {
           },
           tabBarInactiveTintColor: "white",
           tabBarActiveTintColor: "#213c96",
+
         })
       }
     >
+      <Tab.Screen 
+        name="Login" 
+        component={Login} 
+        options={{
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        tabBarStyle: { display: "none" },
+        tabBarLabel: "Login",
+        headerShown: false, 
+        // headerLeft: () => (
+        //   <MaterialCommunityIcons 
+        //     name="chevron-triple-left" 
+        //     size={40} 
+        //     margin={5}
+        //     onPress={() => navigation.navigate('Home')}
+
+        //     />
+        // ),
+      }} 
+      />
       <Tab.Screen
         name="Home"
         component={Home}
@@ -46,6 +70,7 @@ function MyTabs() {
             <MaterialCommunityIcons name="view-list" color={color} size={30} />
           ),
           headerTransparent: true,
+          headerTitle: false,
           headerLeftContainerStyle: {
             height: 80,
             width: 80,
@@ -59,8 +84,9 @@ function MyTabs() {
             top: 30,
           },
           headerTitleStyle: {
-            fontSize: 0
+            opacity: 0
           },
+          headerTitleAlign: "center",
           headerLeft: () => (
             <MaterialCommunityIcons 
               name="sync-circle" 
@@ -99,7 +125,7 @@ function MyTabs() {
           <MaterialCommunityIcons 
             name="chevron-triple-left" 
             size={40} 
-            margin={10}
+            margin={5}
             onPress={() => navigation.navigate('Home')}
 
             />
@@ -108,7 +134,7 @@ function MyTabs() {
           <MaterialCommunityIcons 
             name="help" 
             size={40} 
-            margin={10}
+            margin={5}
             onPress={() => navigation.navigate('FAQ')}
 
             />
@@ -127,8 +153,30 @@ function MyTabs() {
           <MaterialCommunityIcons 
             name="chevron-triple-left" 
             size={40} 
-            margin={10}
+            margin={5}
             onPress={() => navigation.navigate('Settings')}
+
+            />
+        ),
+      }} 
+      />
+      <Tab.Screen 
+        name="Signup" 
+        component={Signup} 
+        options={{
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        tabBarStyle: { display: "none" },
+        tabBarLabel: "Signup",          
+        tabBarLabelStyle: {
+          opacity: 0,
+        }, 
+        headerLeft: () => (
+          <MaterialCommunityIcons 
+            name="chevron-triple-left" 
+            size={40} 
+            margin={5}
+            onPress={() => navigation.navigate('Login')}
 
             />
         ),
@@ -140,6 +188,9 @@ function MyTabs() {
         options={{
           tabBarStyle: { display: "none" },
           tabBarLabel: "Log",
+          tabBarLabelStyle: {
+            opacity: 0,
+          }, 
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="view-list" color={color} size={50} />
           ),
@@ -147,7 +198,7 @@ function MyTabs() {
             <MaterialCommunityIcons 
               name="chevron-triple-left" 
               size={40} 
-              margin={10}
+              margin={5}
               onPress={() => navigation.navigate('Home')}
 
               />
@@ -160,6 +211,9 @@ function MyTabs() {
         options={{
           tabBarStyle: { display: "none" },
           tabBarLabel: "Add",
+          tabBarLabelStyle: {
+            opacity: 0,
+          }, 
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="plus-box" color={color} size={50} />
           ),
@@ -167,7 +221,7 @@ function MyTabs() {
             <MaterialCommunityIcons 
               name="chevron-triple-left" 
               size={40} 
-              margin={10}
+              margin={5}
               onPress={() => navigation.navigate('Home')}
 
               />
@@ -180,6 +234,9 @@ function MyTabs() {
         options={{
           tabBarStyle: { display: "none" },
           tabBarLabel: "Map",
+          tabBarLabelStyle: {
+            opacity: 0,
+          }, 
           tabBarIcon: ({ color }) => (
             <MaterialCommunityIcons name="map" color={color} size={50} />
           ),
@@ -187,7 +244,7 @@ function MyTabs() {
             <MaterialCommunityIcons 
               name="chevron-triple-left" 
               size={40} 
-              margin={10}
+              margin={5}
               onPress={() => navigation.navigate('Home')}
 
               />
@@ -200,8 +257,10 @@ function MyTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <NavigationContainer>
+        <MyTabs />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
