@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet, TouchableWithoutFeedback, ScrollView, Button } from "react-native";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+//import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 function Add() {
   const [text, onChangeText] = useState("");
