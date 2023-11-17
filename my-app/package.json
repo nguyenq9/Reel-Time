@@ -19,6 +19,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-native": "0.72.6",
+    "react-native-element-dropdown": "^2.10.0",
     "react-native-maps": "^1.8.0",
     "react-native-material-bottom-navigation": "^1.0.5",
     "react-native-modern-datepicker": "^1.0.0-beta.91",
