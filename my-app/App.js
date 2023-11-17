@@ -10,7 +10,9 @@ import Add from "./Screens/Add";
 import Home from "./Screens/Home";
 import Settings from "./Screens/Settings"
 import FAQ from "./Screens/FAQ"
+import Login from "./Screens/Login"
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
+import Signup from "./Screens/Signup";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,7 +20,7 @@ function MyTabs() {
   const navigation = useNavigation();
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Login"
 
       screenOptions={
         ({ route }) => ({
@@ -34,9 +36,30 @@ function MyTabs() {
           },
           tabBarInactiveTintColor: "white",
           tabBarActiveTintColor: "#213c96",
+
         })
       }
     >
+      <Tab.Screen 
+        name="Login" 
+        component={Login} 
+        options={{
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        tabBarStyle: { display: "none" },
+        tabBarLabel: "Login",
+        headerShown: false, 
+        // headerLeft: () => (
+        //   <MaterialCommunityIcons 
+        //     name="chevron-triple-left" 
+        //     size={40} 
+        //     margin={5}
+        //     onPress={() => navigation.navigate('Home')}
+
+        //     />
+        // ),
+      }} 
+      />
       <Tab.Screen
         name="Home"
         component={Home}
@@ -132,6 +155,28 @@ function MyTabs() {
             size={40} 
             margin={5}
             onPress={() => navigation.navigate('Settings')}
+
+            />
+        ),
+      }} 
+      />
+      <Tab.Screen 
+        name="Signup" 
+        component={Signup} 
+        options={{
+        tabBarButton: () => null,
+        tabBarVisible: false,
+        tabBarStyle: { display: "none" },
+        tabBarLabel: "Signup",          
+        tabBarLabelStyle: {
+          opacity: 0,
+        }, 
+        headerLeft: () => (
+          <MaterialCommunityIcons 
+            name="chevron-triple-left" 
+            size={40} 
+            margin={5}
+            onPress={() => navigation.navigate('Login')}
 
             />
         ),

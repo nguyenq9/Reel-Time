@@ -6,9 +6,7 @@ import { useState } from 'react';
 
 
 
-function Settings(props) {
-  const { onPress, title = 'Change Username', licence = 'Change license number', sync = 'Sync whenever possible', 
-          gps = 'GPS Location', push = 'Push notifications' } = props;
+function Settings({navigation}) {
   const [pressedGPS, setGPS] = useState(false);
   const [pressedPush, setPush] = useState(false);
   const [pressedSync, setSync] = useState(false);
@@ -29,63 +27,63 @@ function Settings(props) {
 
         <View style ={{marginBottom:20}}>
         <Pressable style={styles.button} onPress={() => console.log("Change username")}>
-        <Text style={styles.text}>{title}</Text>
+        <Text style={styles.text}>{'Change Username'}</Text>
         </Pressable>
         </View>
 
         <View style ={{marginBottom:20}}>
         <Pressable style={styles.button} onPress={() => console.log("Change license number")}>
-        <Text style={styles.text}>{licence}</Text>
+        <Text style={styles.text}>{'Change license number'}</Text>
         </Pressable>
         </View>
 
         <View style ={{marginBottom:20, display:'flex', flexDirection:'row'}}>
-        <Pressable style={styles.button2} onPress={onPress}>
-        <Text style={styles.text}>{sync}</Text>
+        <Pressable style={styles.button2}>
+        <Text style={styles.text}>{'Sync whenever possible'}</Text>
         </Pressable>
         <MaterialCommunityIcons 
               name="check" 
               size={40} 
               margin={10}
               onPress={() => {console.log("Sync whenever"), setSync(!pressedSync)}}
-              color={pressedSync ? "#213c96" : '#ff0000'}
+              color={pressedSync ? '#ff0000' : "#213c96"}
               // color={'white'}
               // backgroundColor={'white'}
               />
         </View>
 
         <View style ={{marginBottom:20, display:'flex', flexDirection:'row'}}>
-        <Pressable style={styles.button2} onPress={onPress}>
-        <Text style={styles.text}>{push}</Text>
+        <Pressable style={styles.button2}>
+        <Text style={styles.text}>{'Push notifications'}</Text>
         </Pressable>
         <MaterialCommunityIcons 
               name="check" 
               size={40} 
               margin={10}
               onPress={() => {console.log("Push Notifications"), setPush(!pressedPush)}}
-              color={pressedPush ? "#213c96" : '#ff0000'}
+              color={pressedPush ? '#ff0000' : "#213c96"}
               // color={'white'}
               // backgroundColor={'white'}
               />
         </View>
 
         <View style ={{marginBottom:20, display:'flex', flexDirection:'row'}}>
-        <Pressable style={styles.button2} onPress={onPress}>
-        <Text style={styles.text}>{gps}</Text>
+        <Pressable style={styles.button2}>
+        <Text style={styles.text}>{'GPS Location'}</Text>
         </Pressable>
         <MaterialCommunityIcons 
               name="check" 
               size={40} 
               margin={10}
               onPress={() => {console.log("GPS Location"), setGPS(!pressedGPS)}}
-              color={pressedGPS ? "#213c96" : '#ff0000'}
+              color={pressedGPS ? '#ff0000' : "#213c96"}
               // color={'white'}
               // backgroundColor={'white'}
               />
         </View>
 
         <View style ={{marginBottom:20}}>
-        <Pressable style={styles.button3} onPress={() => console.log("Change username")}>
+        <Pressable style={styles.button3} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.text}>{'Sign Out'}</Text>
         </Pressable>
         </View>
