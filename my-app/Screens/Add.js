@@ -11,7 +11,6 @@ import {
   Platform,
 } from "react-native";
 import DatePicker from "react-native-modern-datepicker";
-import Toast from 'react-native-toast-message';
 
 function Add({navigation}) {
   const [text, onChangeText] = useState("");
