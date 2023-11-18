@@ -3,6 +3,7 @@ import { Button, Text, View, StyleSheet, Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import MapView from "react-native-maps";
+import { Marker } from "react-native-maps";
 
 const styles = StyleSheet.create({
   container: {
@@ -13,37 +14,38 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   buttonCallout: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 50,
     left: 20, // Set the left position to your desired value
-    backgroundColor: "transparent",
-    borderWidth: 0.5,
+    borderWidth: 2,
     borderRadius: 20,
     backgroundColor: "white",
   },
   buttonCallout2: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 120,
     left: 20, // Set the left position to your desired value
-    backgroundColor: "transparent",
-    borderWidth: 0.5,
+    borderWidth: 2,
     borderRadius: 20,
     backgroundColor: "white",
   },
   buttonCallout3: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 190,
     left: 20, // Set the left position to your desired value
-    backgroundColor: "transparent",
-    borderWidth: 0.5,
+    borderWidth: 2,
     borderRadius: 20,
     backgroundColor: "white",
   },
-  
 });
 
 function Map() {
   const navigation = useNavigation();
+  const [latitude, setLatitude] = React.useState(48.769768);
+  const [longitude, setLongitude] = React.useState(-122.485886);
+  const [markers, setMarkers] = React.useState([]);
+  const [createMarker, setCreateMarker] = React.useState(false);
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       {/* <Text>Map Screens</Text> */}
@@ -57,17 +59,57 @@ function Map() {
         }}
         showUserLocation={true}
         showsCompass={true}
-      />
-      <Pressable style={styles.buttonCallout} onPress={() => console.log("magnify MINUS")}>
-                <MaterialCommunityIcons name="magnify-minus-outline" color={"black"} size={50} />
+        onPress={(event) => {
+          if (createMarker) {
+            setLatitude(event.nativeEvent.coordinate.latitude);
+            setLongitude(event.nativeEvent.coordinate.longitude);
+            setMarkers((markers) => [
+              ...markers,
+              {
+                latitude: latitude,
+                longitude: longitude,
+              },
+            ]);
+            setCreateMarker(false);
+          }
+        }}
+      >
+        {/* <Marker coordinate={{ latitude: latitude, longitude: longitude }} /> */}
+        {markers.map((marker, index) => {
+            return <Marker key={index} coordinate={{latitude: marker.latitude, longitude: marker.longitude}} />;
+          })}
+      </MapView>
+
+      <Pressable
+        style={styles.buttonCallout}
+        onPress={() => console.log("magnify MINUS")}
+      >
+        <MaterialCommunityIcons
+          name="magnify-minus-outline"
+          color={"black"}
+          size={50}
+        />
       </Pressable>
 
-      <Pressable style={styles.buttonCallout2} onPress={() => console.log("magnify PLUS")}>
-                <MaterialCommunityIcons name="magnify-plus-outline" color={"black"} size={50} />
+      <Pressable
+        style={styles.buttonCallout2}
+        onPress={() => console.log("magnify PLUS")}
+      >
+        <MaterialCommunityIcons
+          name="magnify-plus-outline"
+          color={"black"}
+          size={50}
+        />
       </Pressable>
 
-      <Pressable style={styles.buttonCallout3} onPress={() => console.log("CREATING WAYPOINT")}>
-                <MaterialCommunityIcons name="map-marker" color={"black"} size={50} />
+      <Pressable
+        style={styles.buttonCallout3}
+        onPress={() => {
+          setCreateMarker(!createMarker);
+          console.log("CREATING WAYPOINT " + createMarker);
+        }}
+      >
+        <MaterialCommunityIcons name="map-marker" color={createMarker ? 'green' : "black"} size={50} />
       </Pressable>
     </View>
   );
