@@ -1,0 +1,38 @@
+{
+    "info":{
+
+        "totalFish": "5",
+        "speciesCaught": "2",
+        "numberOfTrips": "3",
+        "favoritAreaCode": "9"
+    },
+    "catches":[
+        {
+            "water": "freshWater",
+            "date": "12/31/2023",
+            "species": "Pink salmon",
+            "location": "6",
+            "weight": "10 lbs",
+            "length": "32 in",
+            "quanity": "1"
+        },
+        {
+            "water": "freshWater",
+            "date": "10/10/2012",
+            "species": "choho salmon",
+            "location": "3",
+            "weight": "9 lbs",
+            "length": "30 in",
+            "quanity": "1"
+        },
+        {
+            "water": "saltWater",
+            "date": "12/31/2021",
+            "species": "Pink salmon",
+            "location": "12",
+            "weight": "22 lbs",
+            "length": "40 in",
+            "quanity": "1"
+        }
+    ]
+}
