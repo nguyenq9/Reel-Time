@@ -11,9 +11,16 @@ import FAQ from './Screens/FAQ';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 import Map from './Screens/Map';
-import { SafeAreaProvider, initialWindowMetrics, SafeAreaView } from 'react-native-safe-area-context';
-import { Platform, NativeModules } from 'react-native';
-const { StatusBarManager } = NativeModules;
+import Realm from 'realm';
+
+import { useEffect, useState } from 'react';
+import {
+  SafeAreaProvider,
+  initialWindowMetrics,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
+import {Platform, NativeModules} from 'react-native';
+const {StatusBarManager} = NativeModules;
 
 function MapScreen() {
   return (
@@ -22,6 +29,37 @@ function MapScreen() {
     </View>
   );
 }
+
+const EntrySchema = {
+  name: 'Entry',
+  properties: {
+    _id: "int",
+    name: "string",
+    status: "string?"
+  },
+  primaryKey: "_id"
+};
+
+(async () => {
+  const realm = await Realm.open({
+    path: "myrealm",
+    schema: [EntrySchema],
+  })
+
+  const entries = realm.objects("Entry");
+  console.log(`list of entries: ${entries.map((entry) => entry.name)}`)
+
+  realm.write(() => {
+    entry1 = realm.create("Entry", {
+      _id: 3,
+      name: "14545",
+      status: "Open",
+    });
+    
+    console.log(`created task: ${entry1.name}`)
+  })
+})();
+
 
 const Tab = createBottomTabNavigator();
 
@@ -256,6 +294,7 @@ function MyTabs() {
 }
 
 export default function App() {
+
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <NavigationContainer>
