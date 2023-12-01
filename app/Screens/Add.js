@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -9,21 +9,98 @@ import {
   Button,
   KeyboardAvoidingView,
   Platform,
-} from "react-native";
+} from 'react-native';
+import { setNativeProps } from 'react-native-reanimated';
+import Realm from 'realm';
+
+const EntrySchema = {
+  name: 'Entry',
+  properties: {
+    _id: 'int',
+    name: 'string',
+    status: 'string?',
+  },
+  primaryKey: '_id',
+};
 
 function Add({navigation}) {
-  const [text, onChangeText] = useState("");
-  const [number, onChangeNumber] = useState("");
-  const [areaCode, onChangeCode] = useState("");
-  const [length, onChangeLength] = useState("");
-  const [weight, onChangeWeight] = useState("");
-  const [date, onChangeDate] = useState("");
+  async function getNumEntries() {
+    console.log('Getting numEntries');
+    const realm = await Realm.open({
+      path: 'myrealm',
+      schema: [EntrySchema],
+    });
+
+    const entries = realm.objects('Entry');
+    const num = entries.length
+
+    SetNumEntries(entries.length);
+  }
+
+  const [numEntries, SetNumEntries] = useState(0)
+  const [text, onChangeText] = useState('');
+  const [number, onChangeNumber] = useState('');
+  const [areaCode, onChangeCode] = useState('');
+  const [length, onChangeLength] = useState('');
+  const [weight, onChangeWeight] = useState('');
+  const [date, onChangeDate] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [speciesError, setSpeciesError] = useState('');
   const [quantityError, setQuantityError] = useState('');
   const [areaCodeError, setAreaCodeError] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
+
+  
+  async function writingToRealm() {
+    if (numEntries == 0) {
+      getNumEntries();
+    }
+    console.log('Writing to Realm');
+    const realm = await Realm.open({
+      path: 'myrealm',
+      schema: [EntrySchema],
+    });
+  
+    const entries = realm.objects('Entry');
+    console.log(`list of entries: ${entries.map(entry => entry.name)}`);
+    console.log('length is ' + entries.length);
+  
+    // Assuming SetNumEntries is a function that correctly updates numEntries
+    SetNumEntries(entries.length+1)
+  
+    console.log('numEntries: ' + numEntries);
+  
+    let entry1;
+    realm.write(() => {
+      entry1 = realm.create('Entry', {
+        _id: numEntries,
+        name: '14545',
+        status: 'Open',
+      });
+  
+    });
+  }
+
+  async function deleteAllEntries() {
+    const realm = await Realm.open({
+      path: 'myrealm',
+      schema: [EntrySchema],
+    });
+
+    realm.write(() => {
+      // Obtain all entries
+      const entries = realm.objects("Entry");
+  
+      // Delete each entry
+      entries.forEach((entry) => {
+        realm.delete(entry);
+      });
+  
+      console.log("All entries deleted.");
+    });
+    SetNumEntries(0);
+  }
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -33,16 +110,16 @@ function Add({navigation}) {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
-    console.log("A date has been picked: ", date);
+  const handleConfirm = date => {
+    console.log('A date has been picked: ', date);
     if (date || date.trim() === '') {
-      console.log("Error: ", date);
+      console.log('Error: ', date);
       setErrorMessage('Please enter a valid date.');
     }
     hideDatePicker();
   };
 
-  const isValidDate = (dateStr) => {
+  const isValidDate = dateStr => {
     const regex = /^(0[1-9]|1[0-2])\/(0[1-9]|[12][0-9]|3[01])\/(19|20)\d\d$/;
     return regex.test(dateStr);
   };
@@ -53,39 +130,42 @@ function Add({navigation}) {
   // Confirmation message to user
   // Add to database
   const handleSubmit = (date, species, quantity, areaCode, navigation) => {
-    let valid = true;
-    console.log("Date: ", date);
-    if (!date || date.trim() === '') {
-      console.log("Error: ", date);
-      setErrorMessage('Please enter a valid date.');
-      valid = false;
-    } else if (!isValidDate(date.trim())) {
-      setErrorMessage('Invalid date. Please use the format mm/dd/yyyy.');
-      valid = false;
-    } else {
-      setErrorMessage(''); // Clear the error message
-    }
+    // let valid = true;
+    // console.log('Date: ', date);
+    // if (!date || date.trim() === '') {
+    //   console.log('Error: ', date);
+    //   setErrorMessage('Please enter a valid date.');
+    //   valid = false;
+    // } else if (!isValidDate(date.trim())) {
+    //   setErrorMessage('Invalid date. Please use the format mm/dd/yyyy.');
+    //   valid = false;
+    // } else {
+    //   setErrorMessage(''); // Clear the error message
+    // }
 
-    if (!species || species.trim() === '') {
-      setSpeciesError('Please enter a valid species.');
-      valid = false;
-    } else {
-      setSpeciesError('');
-    }
+    // if (!species || species.trim() === '') {
+    //   setSpeciesError('Please enter a valid species.');
+    //   valid = false;
+    // } else {
+    //   setSpeciesError('');
+    // }
 
-    if (!quantity || quantity.trim() === '') {
-      setQuantityError('Please enter a valid quantity.');
-      valid = false;
-    } else {
-      setQuantityError('');
-    }
+    // if (!quantity || quantity.trim() === '') {
+    //   setQuantityError('Please enter a valid quantity.');
+    //   valid = false;
+    // } else {
+    //   setQuantityError('');
+    // }
 
-    if (!areaCode || areaCode.trim() === '') {
-      setAreaCodeError('Please enter a valid area code.');
-      valid = false;
-    } else {
-      setAreaCodeError('');
-    }
+    // if (!areaCode || areaCode.trim() === '') {
+    //   setAreaCodeError('Please enter a valid area code.');
+    //   valid = false;
+    // } else {
+    //   setAreaCodeError('');
+    // }
+
+    // REMOVE AFTER
+    valid = true
 
     // TODO: Add to database
     if (valid) {
@@ -96,83 +176,84 @@ function Add({navigation}) {
       onChangeDate(''); // Clears date
       onChangeLength(''); // Assuming you want to clear length as well
       onChangeWeight(''); // Assuming you want to clear weight as well
-      navigation.navigate('Home');
+      // navigation.navigate('Home');
+      writingToRealm();
     }
   };
 
+
   return (
-    <KeyboardAvoidingView 
-    style={styles.container}
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
-    keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 0}
-    >
-    <ScrollView style={styles.container}>
-      <View>
-        <Text style={styles.label}>Species *</Text>
-        {speciesError.length > 0 && (
-          <Text style={styles.errorText}>{speciesError}</Text>
-        )}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeText}
-          value={text}
-          placeholder="Enter species"
-        />
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 70 : 0}>
+      <ScrollView style={styles.container}>
+        <View>
+          <Text style={styles.label}>Species *</Text>
+          {speciesError.length > 0 && (
+            <Text style={styles.errorText}>{speciesError}</Text>
+          )}
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeText}
+            value={text}
+            placeholder="Enter species"
+          />
 
-        <Text style={styles.label}>Quantity *</Text>
-        {quantityError.length > 0 && (
-          <Text style={styles.errorText}>{quantityError}</Text>
-        )}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeNumber}
-          value={number}
-          placeholder="Enter quantity"
-          keyboardType="numeric"
-        />
+          <Text style={styles.label}>Quantity *</Text>
+          {quantityError.length > 0 && (
+            <Text style={styles.errorText}>{quantityError}</Text>
+          )}
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeNumber}
+            value={number}
+            placeholder="Enter quantity"
+            keyboardType="numeric"
+          />
 
-        <Text style={styles.label}>Area Code *</Text>
-        {areaCodeError.length > 0 && (
-          <Text style={styles.errorText}>{areaCodeError}</Text>
-        )}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeCode}
-          value={areaCode}
-          placeholder="Enter area code"
-          keyboardType="numeric"
-        />
+          <Text style={styles.label}>Area Code *</Text>
+          {areaCodeError.length > 0 && (
+            <Text style={styles.errorText}>{areaCodeError}</Text>
+          )}
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeCode}
+            value={areaCode}
+            placeholder="Enter area code"
+            keyboardType="numeric"
+          />
 
-        <Text style={styles.label}>Length</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeLength}
-          value={length}
-          placeholder="Enter length"
-          keyboardType="numeric"
-        />
+          <Text style={styles.label}>Length</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeLength}
+            value={length}
+            placeholder="Enter length"
+            keyboardType="numeric"
+          />
 
-        <Text style={styles.label}>Weight</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeWeight}
-          value={weight}
-          placeholder="Enter width"
-          keyboardType="numeric"
-        />
+          <Text style={styles.label}>Weight</Text>
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeWeight}
+            value={weight}
+            placeholder="Enter width"
+            keyboardType="numeric"
+          />
 
-        <Text style={styles.label}>Date *</Text>
-        {errorMessage.length > 0 && (
-          <Text style={styles.errorText}>{errorMessage}</Text>
-        )}
-        <TextInput
-          style={styles.input}
-          onChangeText={onChangeDate}
-          value={date}
-          placeholder="mm/dd/yyyy"
-        />
+          <Text style={styles.label}>Date *</Text>
+          {errorMessage.length > 0 && (
+            <Text style={styles.errorText}>{errorMessage}</Text>
+          )}
+          <TextInput
+            style={styles.input}
+            onChangeText={onChangeDate}
+            value={date}
+            placeholder="mm/dd/yyyy"
+          />
 
-        {/* <Text style={styles.label}>Date</Text>
+          {/* <Text style={styles.label}>Date</Text>
         <TouchableWithoutFeedback onPress={showDatePicker}>
           <View style={styles.dateInput}>
             <Text>{selectedDate}</Text>
@@ -188,9 +269,23 @@ function Add({navigation}) {
                 hideDatePicker();
               }}
             /> */}
-      </View>
-      <Button title="Submit" onPress={() => handleSubmit(date, text, number, areaCode, navigation)} style={styles.submitButton} /> 
-    </ScrollView>
+        </View>
+        <Button
+          title="Submit"
+          onPress={() => {
+            console.log("Handling submit")
+            handleSubmit(date, text, number, areaCode, navigation);
+          }}
+          style={styles.submitButton}
+        />
+        <Button
+          title="Delete All Entries"
+          onPress={() => {
+            deleteAllEntries();
+          }}
+          style={styles.submitButton}
+        />
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
@@ -213,7 +308,7 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    color: "black",
+    color: 'black',
   },
   label: {
     fontSize: 16,
@@ -223,18 +318,18 @@ const styles = StyleSheet.create({
   dateInput: {
     height: 40,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: 'black',
     margin: 12,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   submitButton: {
-    backgroundColor: "red",
+    backgroundColor: 'red',
     margin: 15,
     padding: 15,
     paddingTop: 10,
     width: 10,
-    alignItems: "center",
+    alignItems: 'center',
   },
   errorText: {
     color: 'red',

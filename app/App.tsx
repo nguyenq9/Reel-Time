@@ -20,6 +20,7 @@ import {
   SafeAreaView,
 } from 'react-native-safe-area-context';
 import {Platform, NativeModules} from 'react-native';
+import { UserState } from 'realm-web';
 const {StatusBarManager} = NativeModules;
 
 function MapScreen() {
@@ -30,35 +31,6 @@ function MapScreen() {
   );
 }
 
-const EntrySchema = {
-  name: 'Entry',
-  properties: {
-    _id: "int",
-    name: "string",
-    status: "string?"
-  },
-  primaryKey: "_id"
-};
-
-(async () => {
-  const realm = await Realm.open({
-    path: "myrealm",
-    schema: [EntrySchema],
-  })
-
-  const entries = realm.objects("Entry");
-  console.log(`list of entries: ${entries.map((entry) => entry.name)}`)
-
-  realm.write(() => {
-    entry1 = realm.create("Entry", {
-      _id: 3,
-      name: "14545",
-      status: "Open",
-    });
-    
-    console.log(`created task: ${entry1.name}`)
-  })
-})();
 
 
 const Tab = createBottomTabNavigator();
@@ -110,7 +82,6 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Login');
-                console.log('hehe');
               }}
             />
           ),
@@ -125,7 +96,6 @@ function MyTabs() {
             opacity: 0,
           },
           tabBarButton: () => null,
-          tabBarLabel: 'HEHE',
           tabBarLabelStyle: {
             opacity: 0,
           },
@@ -183,7 +153,6 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Home');
-                console.log('hehe');
               }}
             />
           ),
@@ -194,7 +163,6 @@ function MyTabs() {
               style={{marginRight: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('FAQ');
-                console.log('hehe');
               }}
             />
           ),
@@ -215,7 +183,6 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Settings');
-                console.log('hehe');
               }}
             />
           ),
@@ -237,7 +204,6 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Home');
-                console.log('hehe');
               }}
             />
           ),
@@ -261,7 +227,6 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Home');
-                console.log('hehe');
               }}
             />
           ),
@@ -283,7 +248,6 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Home');
-                console.log('hehe');
               }}
             />
           ),

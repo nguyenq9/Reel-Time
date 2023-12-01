@@ -5,7 +5,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 
 
 
-const Log = () => {
+const Log = prop => {
   
   const [modalVisible, setModalVisible] = React.useState(false);
   const [weight, setweight] = React.useState("");
