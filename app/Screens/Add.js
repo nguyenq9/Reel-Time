@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,32 +12,34 @@ import {
 } from 'react-native';
 import { setNativeProps } from 'react-native-reanimated';
 import Realm from 'realm';
+import { Alert } from 'react-native';
 
 const EntrySchema = {
   name: 'Entry',
   properties: {
     _id: 'int',
-    name: 'string',
-    status: 'string?',
+    date: 'string',
+    species: 'string',
+    quantity: 'int',
+    areaCode: 'int'
   },
   primaryKey: '_id',
 };
 
 function Add({navigation}) {
-  async function getNumEntries() {
-    console.log('Getting numEntries');
+  async function calcIndex() {
     const realm = await Realm.open({
-      path: 'myrealm',
+      path: 'addentryrealm',
       schema: [EntrySchema],
     });
 
     const entries = realm.objects('Entry');
-    const num = entries.length
-
-    SetNumEntries(entries.length);
+    const index = entries.length+1
+    console.log("setting free id to "+index);
+    SetFreeId(index)
   }
 
-  const [numEntries, SetNumEntries] = useState(0)
+  const [freeId, SetFreeId] = useState(0)
   const [text, onChangeText] = useState('');
   const [number, onChangeNumber] = useState('');
   const [areaCode, onChangeCode] = useState('');
@@ -51,40 +53,47 @@ function Add({navigation}) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
 
+  useEffect(() => {
+    calcIndex();
+  }, []);
   
-  async function writingToRealm() {
-    if (numEntries == 0) {
-      getNumEntries();
-    }
+  async function writingToRealm(date, species, quantity, areaCode) {
     console.log('Writing to Realm');
     const realm = await Realm.open({
-      path: 'myrealm',
+      path: 'addentryrealm',
       schema: [EntrySchema],
     });
   
     const entries = realm.objects('Entry');
-    console.log(`list of entries: ${entries.map(entry => entry.name)}`);
-    console.log('length is ' + entries.length);
-  
-    // Assuming SetNumEntries is a function that correctly updates numEntries
-    SetNumEntries(entries.length+1)
-  
-    console.log('numEntries: ' + numEntries);
-  
+
+ 
     let entry1;
     realm.write(() => {
       entry1 = realm.create('Entry', {
-        _id: numEntries,
-        name: '14545',
-        status: 'Open',
+        _id: freeId,
+        date: date,
+        species: species,
+        quantity: parseInt(quantity),
+        areaCode: parseInt(areaCode)
       });
-  
+      SetFreeId(freeId+1)
+      // Alert.alert('Added Entry', 'My Alert Msg', [
+      //   {
+      //     text: 'Cancel',
+      //     onPress: () => console.log('Cancel Pressed'),
+      //     style: 'cancel',
+      //   },
+      //   {text: 'OK', onPress: () => console.log('OK Pressed')},
+      // ]);
     });
+    
+    console.log(`list of entries: ${entries.map(entry => 
+      `ID: ${entry._id} | Species: ${entry.species}`)}`);
   }
 
   async function deleteAllEntries() {
     const realm = await Realm.open({
-      path: 'myrealm',
+      path: 'addentryrealm',
       schema: [EntrySchema],
     });
 
@@ -99,7 +108,7 @@ function Add({navigation}) {
   
       console.log("All entries deleted.");
     });
-    SetNumEntries(0);
+    SetFreeId(1);
   }
 
   const showDatePicker = () => {
@@ -130,42 +139,39 @@ function Add({navigation}) {
   // Confirmation message to user
   // Add to database
   const handleSubmit = (date, species, quantity, areaCode, navigation) => {
-    // let valid = true;
-    // console.log('Date: ', date);
-    // if (!date || date.trim() === '') {
-    //   console.log('Error: ', date);
-    //   setErrorMessage('Please enter a valid date.');
-    //   valid = false;
-    // } else if (!isValidDate(date.trim())) {
-    //   setErrorMessage('Invalid date. Please use the format mm/dd/yyyy.');
-    //   valid = false;
-    // } else {
-    //   setErrorMessage(''); // Clear the error message
-    // }
+    let valid = true;
+    console.log('Date: ', date);
+    if (!date || date.trim() === '') {
+      console.log('Error: ', date);
+      setErrorMessage('Please enter a valid date.');
+      valid = false;
+    } else if (!isValidDate(date.trim())) {
+      setErrorMessage('Invalid date. Please use the format mm/dd/yyyy.');
+      valid = false;
+    } else {
+      setErrorMessage(''); // Clear the error message
+    }
 
-    // if (!species || species.trim() === '') {
-    //   setSpeciesError('Please enter a valid species.');
-    //   valid = false;
-    // } else {
-    //   setSpeciesError('');
-    // }
+    if (!species || species.trim() === '') {
+      setSpeciesError('Please enter a valid species.');
+      valid = false;
+    } else {
+      setSpeciesError('');
+    }
 
-    // if (!quantity || quantity.trim() === '') {
-    //   setQuantityError('Please enter a valid quantity.');
-    //   valid = false;
-    // } else {
-    //   setQuantityError('');
-    // }
+    if (!quantity || quantity.trim() === '') {
+      setQuantityError('Please enter a valid quantity.');
+      valid = false;
+    } else {
+      setQuantityError('');
+    }
 
-    // if (!areaCode || areaCode.trim() === '') {
-    //   setAreaCodeError('Please enter a valid area code.');
-    //   valid = false;
-    // } else {
-    //   setAreaCodeError('');
-    // }
-
-    // REMOVE AFTER
-    valid = true
+    if (!areaCode || areaCode.trim() === '') {
+      setAreaCodeError('Please enter a valid area code.');
+      valid = false;
+    } else {
+      setAreaCodeError('');
+    }
 
     // TODO: Add to database
     if (valid) {
@@ -177,7 +183,7 @@ function Add({navigation}) {
       onChangeLength(''); // Assuming you want to clear length as well
       onChangeWeight(''); // Assuming you want to clear weight as well
       // navigation.navigate('Home');
-      writingToRealm();
+      writingToRealm(date, species, quantity, areaCode);
     }
   };
 

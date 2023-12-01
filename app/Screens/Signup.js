@@ -1,62 +1,74 @@
 import * as React from 'react';
 import { Text, View, Pressable, StyleSheet, TextInput} from 'react-native';
+import Realm from 'realm';
+import { useState } from 'react';
+
 
 function Signup({navigation}) {
+  const [username, setUsername] = useState('');
+  const [freeId, setFreeId] = useState(0)
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
+  const [license, setLicense] = useState('');
+  const [password, SetPassword] = useState('');
+
     return (
       <View style={{justifyContent: 'flex-start', alignItems: 'center', gap:-5}}>
         <View>
             <TextInput
             style={styles.input}
             placeholder='First Name'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='Last Name'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='Username'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='Email'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='Phone Number'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='Street Address'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='City State Zipcode'
-            secureTextEntry={true}
         />
         </View>
         <View>
             <TextInput
             style={styles.input}
             placeholder='License Number'
+        />
+        </View>
+        <View>
+            <TextInput
+            style={styles.input}
+            placeholder='Password'
             secureTextEntry={true}
         />
         </View>
