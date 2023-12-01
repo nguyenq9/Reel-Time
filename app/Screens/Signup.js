@@ -3,6 +3,22 @@ import { Text, View, Pressable, StyleSheet, TextInput} from 'react-native';
 import Realm from 'realm';
 import { useState } from 'react';
 
+const UserSchema = {
+  name: 'User',
+  properties: {
+    _id: 'int',
+    firstName: 'string',
+    lastName: 'string',
+    userName: 'string',
+    // email: { type: 'string', validation: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/ },
+    email: 'string',
+    phoneNum: 'string',
+    streetAddress: 'string',
+    license: 'string',
+    password: 'string'
+  },
+  primaryKey: '_id',
+};
 
 function Signup({navigation}) {
   const [username, setUsername] = useState('');
@@ -14,6 +30,15 @@ function Signup({navigation}) {
   const [streetAddress, setStreetAddress] = useState('');
   const [license, setLicense] = useState('');
   const [password, SetPassword] = useState('');
+
+  async function createAnAccount(){
+    const realm = await Realm.open({
+      path: 'userrealm',
+      schema: [UserSchema],
+    });
+
+    // realm.write a user
+  }
 
     return (
       <View style={{justifyContent: 'flex-start', alignItems: 'center', gap:-5}}>

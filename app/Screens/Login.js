@@ -47,25 +47,24 @@ function Login({navigation}) {
 
   const handleLogin = () => {
     let valid = true;
-    // if (!license) {
-    //   valid = false;
-    // }
+    if (!license) {
+      valid = false;
+    }
 
-    // if (!password) {
-      
-    //   // VALIDATE PASSWORD BASED ON THE LICENSE NUMBER
-      
-    //   Alert.alert('Login Error', 'Invalid password', [
-    //     {text: 'OK'},
-    //   ]);
-    //   valid = false;
-    // }
+    if (!password) {
+      // VALIDATE PASSWORD BASED ON THE LICENSE NUMBER
+      valid = false;
+    }
     
     if (valid) {
       test();
       setLicense('')
       SetPassword('')
       navigation.navigate('Home');
+    } else {
+      Alert.alert('Login Error', 'Invalid Username or Password', [
+        {text: 'OK'},
+      ]);
     }
   };
 
