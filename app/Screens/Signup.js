@@ -189,13 +189,13 @@ function Signup({navigation}) {
           <Text style={styles.text}>{'Submit'}</Text>
         </Pressable>
 
-        <Pressable
+        {/* <Pressable
           style={styles.button}
           onPress={() => {
             deleteAllEntries()
           }}>
           <Text style={styles.text}>{'Delete'}</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
     </View>
   );

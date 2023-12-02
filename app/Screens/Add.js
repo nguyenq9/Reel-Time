@@ -68,8 +68,6 @@ function Add({navigation}) {
       schema: [UserSchema, EntrySchema],
     });
 
-
-
     var specificId;
     try {
       specificId = JSON.parse(await AsyncStorage.getItem('user'));
@@ -103,20 +101,30 @@ function Add({navigation}) {
 
   async function deleteAllEntries() {
     const realm = await Realm.open({
-      path: 'addentryrealm',
-      schema: [EntrySchema],
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
     });
 
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
     realm.write(() => {
-      // Obtain all entries
-      const entries = realm.objects('Entry');
 
       // Delete each entry
-      entries.forEach(entry => {
+      user.entries.forEach(entry => {
         realm.delete(entry);
       });
 
       console.log('All entries deleted.');
+      console.log(user.entries)
     });
     SetFreeId(1);
   }
@@ -293,13 +301,13 @@ function Add({navigation}) {
           }}
           style={styles.submitButton}
         />
-        <Button
+        {/* <Button
           title="Delete All Entries"
           onPress={() => {
             deleteAllEntries();
           }}
           style={styles.submitButton}
-        />
+        /> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
