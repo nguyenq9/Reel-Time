@@ -1,12 +1,39 @@
-import * as React from 'react';
 import {Modal, Text, View, TouchableWithoutFeedback, Button,StyleSheet} from 'react-native';
+import React, {useEffect} from 'react';
 import Data from '../Data/Data.json';
 import { Dropdown } from 'react-native-element-dropdown';
+import Realm from 'realm';
+import EntrySchema from '../EntrySchema';
+import UserSchema from '../UserSchema';
 
 
 
-const Log = prop => {
+function Log() {
+  const [entries, setEntries] = React.useState([]);
   
+  async function calcIndex() {
+    const realm = await Realm.open({
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
+    });
+    const specificId = 'admin';
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+    if(user){
+      /*useEffect(() => {
+        setEntries(user.entries);
+      }, []);
+     */
+      setEntries(user.entries);
+      /*useEffect(() => {
+        
+      }, [user.entries]);*/
+    }
+    else{
+      console.log("no user");
+    }
+  }
   const [modalVisible, setModalVisible] = React.useState(false);
   const [weight, setweight] = React.useState("");
   const [length, setlength] = React.useState("");
@@ -19,8 +46,15 @@ const Log = prop => {
     { label: 'saltWater', value: 'saltWater' }
   ];
   const [isFocus, setIsFocus] = React.useState(false);
-  return(
 
+  
+  useEffect(() => {
+    calcIndex();
+
+  }, [entries]);
+  
+  return(
+   
     <View style = {{paddingTop: 30, paddingLeft: 15 , paddingRight: 15}} >
       
         <View style = {{flexDirection: 'row', justifyContent: 'center',alignItems: 'center', height: "14%"}}>
@@ -51,20 +85,6 @@ const Log = prop => {
        
       </View>
 
-      <Dropdown
-        style = {{borderWidth: 2}}
-        data={waterTypes}
-        maxHeight={300}
-        labelField="label"
-        valueField="value"
-        value={waterTypeFilter}
-        onFocus={() => setIsFocus(true)}
-        onBlur={() => setIsFocus(false)}
-        onChange={item => {
-          setwaterTypeFilter(item.value);
-          setIsFocus(false);
-        }}
-        />
     <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
           <View style={{ width: "22%", backgroundColor: 'lightyellow'}}>
               <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>Date</Text>
@@ -76,10 +96,10 @@ const Log = prop => {
               <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>Location</Text>
           </View>
       </View>
-    {Data.catches.map( (item, i) => {
-      if(item.water == waterTypeFilter){
+    {entries.map( (item, i) => {
+      
         return(
-          <TouchableWithoutFeedback onPress = {() => {setModalVisible(!modalVisible); setweight(item.weight);setlength(item.length);setLocation(item.location);setSpecies(item.species);setquanity(item.quanity)}}  key={i}>
+          <TouchableWithoutFeedback onPress = {() => {setModalVisible(!modalVisible); setweight(20);setlength(22);setLocation(item.areaCode);setSpecies(item.species);setquanity(item.quantity)}}  key={i}>
           <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
             <View style={{ width: "22%", backgroundColor: 'lightyellow'}}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>{item.date}</Text>
@@ -88,13 +108,13 @@ const Log = prop => {
                 <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>{item.species}</Text>
             </View>
             <View style={{ width: "18%", backgroundColor: 'lavender'}}>
-                <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>{item.location}</Text>
+                <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>{item.areaCode}</Text>
             </View>
         </View>
         </TouchableWithoutFeedback>
         
           );
-      }
+      
     })}
     <Modal visible={modalVisible} style = {{margin: 50}}>
       <View style = {{paddingTop: "25%", paddingLeft: 15 , paddingRight: 15}} >
@@ -158,3 +178,18 @@ const Log = prop => {
     borderRightWidth:2}
   })
 
+/*
+      <Dropdown
+        style = {{borderWidth: 2}}
+        data={waterTypes}
+        maxHeight={300}
+        labelField="label"
+        valueField="value"
+        value={waterTypeFilter}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
+        onChange={item => {
+          setwaterTypeFilter(item.value);
+          setIsFocus(false);
+        }}
+        />*/
