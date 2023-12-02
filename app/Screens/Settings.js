@@ -4,11 +4,20 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import {TouchableHighlight} from 'react-native-web';
 import {useState} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Settings({navigation}) {
   const [pressedGPS, setGPS] = useState(false);
   const [pressedPush, setPush] = useState(false);
   const [pressedSync, setSync] = useState(false);
+
+  const removeData = async () => {
+    try {
+      const savedUser = await AsyncStorage.clear();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
@@ -94,7 +103,10 @@ function Settings({navigation}) {
       <View style={{marginBottom: 20}}>
         <Pressable
           style={styles.button3}
-          onPress={() => navigation.navigate('Login')}>
+          onPress={() => {
+            removeData();
+            navigation.navigate('Login')
+            }}>
           <Text style={styles.text}>{'Sign Out'}</Text>
         </Pressable>
       </View>

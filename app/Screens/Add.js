@@ -15,25 +15,9 @@ import Realm from 'realm';
 import {Alert} from 'react-native';
 import EntrySchema from '../EntrySchema';
 import UserSchema from '../UserSchema';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Add({navigation}) {
-  async function calcIndex() {
-    const realm = await Realm.open({
-      path: 'realm3',
-      schema: [UserSchema, EntrySchema],
-    });
-
-    const specificId = 'admin'; // Declare specificId with the desired value
-
-    const user = realm
-      .objects('User')
-      .filtered('userName == $0', specificId)[0];
-
-    if (user) {
-      SetFreeId(user.entries.length);
-    }
-  }
-
   const [freeId, SetFreeId] = useState(0);
   const [text, onChangeText] = useState('');
   const [number, onChangeNumber] = useState('');
@@ -48,9 +32,34 @@ function Add({navigation}) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
 
+  async function calcIndex() {
+    const realm = await Realm.open({
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
+    });
+
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
+    if (user) {
+      SetFreeId(user.entries.length);
+    }
+  }
+
   useEffect(() => {
     calcIndex();
+    // getUser();
   }, []);
+
+
 
   async function writingToRealm(date, species, quantity, areaCode) {
     console.log('Writing to Realm');
@@ -59,7 +68,15 @@ function Add({navigation}) {
       schema: [UserSchema, EntrySchema],
     });
 
-    const specificId = 'admin';
+
+
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+
     const user = realm
       .objects('User')
       .filtered('userName == $0', specificId)[0];

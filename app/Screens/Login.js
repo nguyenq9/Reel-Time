@@ -9,16 +9,25 @@ import {
 } from 'react-native';
 import {useState} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 import Realm from 'realm';
 import UserSchema from '../UserSchema';
 import EntrySchema from '../EntrySchema';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Login({navigation}) {
   const [pressedR, setR] = useState(false);
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [verified, setVerified] = useState(false);
+
+  const storeUser = async value => {
+    try {
+      await AsyncStorage.setItem('user', JSON.stringify(value));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   async function getAllUsers() {
     const realm = await Realm.open({
@@ -45,31 +54,34 @@ function Login({navigation}) {
     });
     const specificId = userName;
 
-    const user = realm.objects('User').filtered('userName == $0', specificId)[0];
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
     if (user) {
       if (user.password === password) {
-        console.log("password is CORRECT for user: ", user.userName);
+        console.log('password is CORRECT for user: ', user.userName);
         valid = true;
-      }else {
-        console.log("password is INCORRECT for user: ", user.userName);
+      } else {
+        console.log('password is INCORRECT for user: ', user.userName);
         valid = false;
       }
     } else {
-      console.log("No user found");
+      console.log('No user found');
       valid = false;
     }
-    
+
     if (valid) {
       getAllUsers();
-      setPassword('')
+      setPassword('');
+      storeUser(userName);
       navigation.navigate('Home');
     } else {
       Alert.alert('Login Error', 'Invalid Username or Password', [
         {text: 'OK'},
       ]);
-      setPassword('')
+      setPassword('');
     }
-  };
+  }
 
   return (
     <View style={{flex: 1, alignItems: 'center', backgroundColor: '#add8e6'}}>
