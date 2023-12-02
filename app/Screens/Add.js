@@ -200,7 +200,7 @@ function Add({navigation}) {
       onChangeDate(''); // Clears date
       onChangeLength(''); // Assuming you want to clear length as well
       onChangeWeight(''); // Assuming you want to clear weight as well
-      // navigation.navigate('Home');
+      navigation.navigate('Home');
       writingToRealm(date, species, quantity, areaCode);
     }
   };

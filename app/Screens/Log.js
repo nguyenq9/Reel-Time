@@ -5,6 +5,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import Realm from 'realm';
 import EntrySchema from '../EntrySchema';
 import UserSchema from '../UserSchema';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -16,10 +17,16 @@ function Log() {
       path: 'realm3',
       schema: [UserSchema, EntrySchema],
     });
-    const specificId = 'admin';
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
     const user = realm
       .objects('User')
       .filtered('userName == $0', specificId)[0];
+  
     if(user){
       /*useEffect(() => {
         setEntries(user.entries);
@@ -50,7 +57,6 @@ function Log() {
   
   useEffect(() => {
     calcIndex();
-
   }, [entries]);
   
   return(
