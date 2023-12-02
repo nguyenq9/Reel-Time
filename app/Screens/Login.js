@@ -11,60 +11,63 @@ import {useState} from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Alert } from 'react-native';
 import Realm from 'realm';
-
-const UserSchema = {
-  name: 'User',
-  properties: {
-    _id: 'int',
-    firstName: 'string',
-    lastName: 'string',
-    userName: 'string',
-    // email: { type: 'string', validation: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/ },
-    email: 'string',
-    phoneNum: 'string',
-    streetAddress: 'string',
-    license: 'string',
-    password: 'string'
-  },
-  primaryKey: '_id',
-};
-
+import UserSchema from '../UserSchema';
+import EntrySchema from '../EntrySchema';
 
 function Login({navigation}) {
   const [pressedR, setR] = useState(false);
-  const [license, setLicense] = useState('');
-  const [password, SetPassword] = useState('');
+  const [userName, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [verified, setVerified] = useState(false);
 
-  async function test() {
+  async function getAllUsers() {
     const realm = await Realm.open({
-      path: 'userrealm',
-      schema: [UserSchema],
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
     });
     const users = realm.objects('User');
-    console.log(`list of users: ${users.map(u => u._id)}`);
+    console.log(`list of users: ${users.map(u => u.userName)}`);
   }
-  
 
-  const handleLogin = () => {
+  async function handleLogin() {
     let valid = true;
-    if (!license) {
+    if (!userName) {
       valid = false;
     }
 
     if (!password) {
-      // VALIDATE PASSWORD BASED ON THE LICENSE NUMBER
+      valid = false;
+    }
+
+    const realm = await Realm.open({
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
+    });
+    const specificId = userName;
+
+    const user = realm.objects('User').filtered('userName == $0', specificId)[0];
+    if (user) {
+      if (user.password === password) {
+        console.log("password is CORRECT for user: ", user.userName);
+        valid = true;
+      }else {
+        console.log("password is INCORRECT for user: ", user.userName);
+        valid = false;
+      }
+    } else {
+      console.log("No user found");
       valid = false;
     }
     
     if (valid) {
-      test();
-      setLicense('')
-      SetPassword('')
+      getAllUsers();
+      setPassword('')
       navigation.navigate('Home');
     } else {
       Alert.alert('Login Error', 'Invalid Username or Password', [
         {text: 'OK'},
       ]);
+      setPassword('')
     }
   };
 
@@ -84,10 +87,10 @@ function Login({navigation}) {
       <View>
         <TextInput
           style={styles.input}
-          placeholder="License Number"
+          placeholder="Username"
           // secureTextEntry={true}
-          onChangeText={setLicense}
-          value={license}
+          onChangeText={setUserName}
+          value={userName}
         />
       </View>
       <View style={{marginBottom: 0}}>
@@ -95,7 +98,7 @@ function Login({navigation}) {
           style={styles.input}
           placeholder="Password"
           secureTextEntry={true}
-          onChangeText={SetPassword}
+          onChangeText={setPassword}
           value={password}
         />
       </View>

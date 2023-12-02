@@ -10,36 +10,31 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { setNativeProps } from 'react-native-reanimated';
+import {setNativeProps} from 'react-native-reanimated';
 import Realm from 'realm';
-import { Alert } from 'react-native';
-
-const EntrySchema = {
-  name: 'Entry',
-  properties: {
-    _id: 'int',
-    date: 'string',
-    species: 'string',
-    quantity: 'int',
-    areaCode: 'int'
-  },
-  primaryKey: '_id',
-};
+import {Alert} from 'react-native';
+import EntrySchema from '../EntrySchema';
+import UserSchema from '../UserSchema';
 
 function Add({navigation}) {
   async function calcIndex() {
     const realm = await Realm.open({
-      path: 'addentryrealm',
-      schema: [EntrySchema],
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
     });
 
-    const entries = realm.objects('Entry');
-    const index = entries.length+1
-    console.log("setting free id to "+index);
-    SetFreeId(index)
+    const specificId = 'admin'; // Declare specificId with the desired value
+
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
+    if (user) {
+      SetFreeId(user.entries.length);
+    }
   }
 
-  const [freeId, SetFreeId] = useState(0)
+  const [freeId, SetFreeId] = useState(0);
   const [text, onChangeText] = useState('');
   const [number, onChangeNumber] = useState('');
   const [areaCode, onChangeCode] = useState('');
@@ -56,39 +51,37 @@ function Add({navigation}) {
   useEffect(() => {
     calcIndex();
   }, []);
-  
+
   async function writingToRealm(date, species, quantity, areaCode) {
     console.log('Writing to Realm');
     const realm = await Realm.open({
-      path: 'addentryrealm',
-      schema: [EntrySchema],
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
     });
-  
-    const entries = realm.objects('Entry');
 
- 
-    let entry1;
+    const specificId = 'admin';
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
     realm.write(() => {
-      entry1 = realm.create('Entry', {
-        _id: freeId,
-        date: date,
-        species: species,
-        quantity: parseInt(quantity),
-        areaCode: parseInt(areaCode)
-      });
-      SetFreeId(freeId+1)
-      // Alert.alert('Added Entry', 'My Alert Msg', [
-      //   {
-      //     text: 'Cancel',
-      //     onPress: () => console.log('Cancel Pressed'),
-      //     style: 'cancel',
-      //   },
-      //   {text: 'OK', onPress: () => console.log('OK Pressed')},
-      // ]);
+      if (user) {
+        const entry = {
+          _id: freeId,
+          date: date,
+          species: species,
+          quantity: parseInt(quantity),
+          areaCode: parseInt(areaCode),
+        };
+
+        // Push the new entry into the array
+        user.entries.push(entry);
+        console.log(user.entries);
+        SetFreeId(freeId + 1);
+      } else {
+        console.warn('Add entry error. No user found');
+      }
     });
-    
-    console.log(`list of entries: ${entries.map(entry => 
-      `ID: ${entry._id} | Species: ${entry.species}`)}`);
   }
 
   async function deleteAllEntries() {
@@ -99,14 +92,14 @@ function Add({navigation}) {
 
     realm.write(() => {
       // Obtain all entries
-      const entries = realm.objects("Entry");
-  
+      const entries = realm.objects('Entry');
+
       // Delete each entry
-      entries.forEach((entry) => {
+      entries.forEach(entry => {
         realm.delete(entry);
       });
-  
-      console.log("All entries deleted.");
+
+      console.log('All entries deleted.');
     });
     SetFreeId(1);
   }
@@ -186,7 +179,6 @@ function Add({navigation}) {
       writingToRealm(date, species, quantity, areaCode);
     }
   };
-
 
   return (
     <KeyboardAvoidingView
@@ -279,7 +271,7 @@ function Add({navigation}) {
         <Button
           title="Submit"
           onPress={() => {
-            console.log("Handling submit")
+            console.log('Handling submit');
             handleSubmit(date, text, number, areaCode, navigation);
           }}
           style={styles.submitButton}
