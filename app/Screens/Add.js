@@ -10,36 +10,15 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { setNativeProps } from 'react-native-reanimated';
+import {setNativeProps} from 'react-native-reanimated';
 import Realm from 'realm';
-import { Alert } from 'react-native';
-
-const EntrySchema = {
-  name: 'Entry',
-  properties: {
-    _id: 'int',
-    date: 'string',
-    species: 'string',
-    quantity: 'int',
-    areaCode: 'int'
-  },
-  primaryKey: '_id',
-};
+import {Alert} from 'react-native';
+import EntrySchema from '../EntrySchema';
+import UserSchema from '../UserSchema';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function Add({navigation}) {
-  async function calcIndex() {
-    const realm = await Realm.open({
-      path: 'addentryrealm',
-      schema: [EntrySchema],
-    });
-
-    const entries = realm.objects('Entry');
-    const index = entries.length+1
-    console.log("setting free id to "+index);
-    SetFreeId(index)
-  }
-
-  const [freeId, SetFreeId] = useState(0)
+  const [freeId, SetFreeId] = useState(0);
   const [text, onChangeText] = useState('');
   const [number, onChangeNumber] = useState('');
   const [areaCode, onChangeCode] = useState('');
@@ -53,60 +32,99 @@ function Add({navigation}) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
 
+  async function calcIndex() {
+    const realm = await Realm.open({
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
+    });
+
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
+    if (user) {
+      SetFreeId(user.entries.length);
+    }
+  }
+
   useEffect(() => {
     calcIndex();
+    // getUser();
   }, []);
-  
+
+
+
   async function writingToRealm(date, species, quantity, areaCode) {
     console.log('Writing to Realm');
     const realm = await Realm.open({
-      path: 'addentryrealm',
-      schema: [EntrySchema],
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
     });
-  
-    const entries = realm.objects('Entry');
 
- 
-    let entry1;
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
     realm.write(() => {
-      entry1 = realm.create('Entry', {
-        _id: freeId,
-        date: date,
-        species: species,
-        quantity: parseInt(quantity),
-        areaCode: parseInt(areaCode)
-      });
-      SetFreeId(freeId+1)
-      // Alert.alert('Added Entry', 'My Alert Msg', [
-      //   {
-      //     text: 'Cancel',
-      //     onPress: () => console.log('Cancel Pressed'),
-      //     style: 'cancel',
-      //   },
-      //   {text: 'OK', onPress: () => console.log('OK Pressed')},
-      // ]);
+      if (user) {
+        const entry = {
+          _id: freeId,
+          date: date,
+          species: species,
+          quantity: parseInt(quantity),
+          areaCode: parseInt(areaCode),
+        };
+
+        // Push the new entry into the array
+        user.entries.push(entry);
+        console.log(user.entries);
+        SetFreeId(freeId + 1);
+      } else {
+        console.warn('Add entry error. No user found');
+      }
     });
-    
-    console.log(`list of entries: ${entries.map(entry => 
-      `ID: ${entry._id} | Species: ${entry.species}`)}`);
   }
 
   async function deleteAllEntries() {
     const realm = await Realm.open({
-      path: 'addentryrealm',
-      schema: [EntrySchema],
+      path: 'realm3',
+      schema: [UserSchema, EntrySchema],
     });
 
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+
+    const user = realm
+      .objects('User')
+      .filtered('userName == $0', specificId)[0];
+
     realm.write(() => {
-      // Obtain all entries
-      const entries = realm.objects("Entry");
-  
+
       // Delete each entry
-      entries.forEach((entry) => {
+      user.entries.forEach(entry => {
         realm.delete(entry);
       });
-  
-      console.log("All entries deleted.");
+
+      console.log('All entries deleted.');
+      console.log(user.entries)
     });
     SetFreeId(1);
   }
@@ -186,7 +204,6 @@ function Add({navigation}) {
       writingToRealm(date, species, quantity, areaCode);
     }
   };
-
 
   return (
     <KeyboardAvoidingView
@@ -279,18 +296,18 @@ function Add({navigation}) {
         <Button
           title="Submit"
           onPress={() => {
-            console.log("Handling submit")
+            console.log('Handling submit');
             handleSubmit(date, text, number, areaCode, navigation);
           }}
           style={styles.submitButton}
         />
-        <Button
+        {/* <Button
           title="Delete All Entries"
           onPress={() => {
             deleteAllEntries();
           }}
           style={styles.submitButton}
-        />
+        /> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
