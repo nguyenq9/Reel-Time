@@ -6,41 +6,12 @@ import Realm from 'realm';
 import EntrySchema from '../EntrySchema';
 import UserSchema from '../UserSchema';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from '@react-navigation/native';
 
 
-
-function Log() {
+function Log(props) {
   const [entries, setEntries] = React.useState([]);
   
-  async function calcIndex() {
-    const realm = await Realm.open({
-      path: 'realm3',
-      schema: [UserSchema, EntrySchema],
-    });
-    var specificId;
-    try {
-      specificId = JSON.parse(await AsyncStorage.getItem('user'));
-    } catch (error) {
-      console.log(error);
-    }
-    const user = realm
-      .objects('User')
-      .filtered('userName == $0', specificId)[0];
-  
-    if(user){
-      /*useEffect(() => {
-        setEntries(user.entries);
-      }, []);
-     */
-      setEntries(user.entries);
-      /*useEffect(() => {
-        
-      }, [user.entries]);*/
-    }
-    else{
-      console.log("no user");
-    }
-  }
   const [modalVisible, setModalVisible] = React.useState(false);
   const [weight, setweight] = React.useState("");
   const [length, setlength] = React.useState("");
@@ -52,12 +23,44 @@ function Log() {
     { label: 'freshWater', value: 'freshWater' },
     { label: 'saltWater', value: 'saltWater' }
   ];
-  const [isFocus, setIsFocus] = React.useState(false);
+  const isFocused = useIsFocused();
+  const [user, setUser] = React.useState('');
 
   
   useEffect(() => {
-    calcIndex();
-  }, [entries]);
+    async function calcIndex() {
+      const realm = await Realm.open({
+        path: 'realm3',
+        schema: [UserSchema, EntrySchema],
+      });
+      var specificId;
+      try {
+        specificId = JSON.parse(await AsyncStorage.getItem('user'));
+      } catch (error) {
+        console.log(error);
+      }
+
+      if (specificId == user) {
+        return
+      }
+
+      const realm_user = realm
+        .objects('User')
+        .filtered('userName == $0', specificId)[0];
+    
+      
+
+      if(realm_user){
+        if (specificId != user) {
+          setEntries(realm_user.entries)
+        }
+      }
+    }
+    
+    if (isFocused ) {
+      calcIndex();
+    } 
+  }, [entries, isFocused]);
   
   return(
    
