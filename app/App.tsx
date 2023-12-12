@@ -232,7 +232,7 @@ function MyTabs() {
       />
       <Tab.Screen
         name="Map"
-        component={Map}
+        component={MapScreen}
         options={{
           tabBarStyle: {display: 'none'},
           tabBarLabelStyle: {
