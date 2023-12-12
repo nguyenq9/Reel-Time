@@ -98,13 +98,13 @@ function Log(props) {
       </View>
 
     <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-          <View style={{ width: "22%", backgroundColor: 'lightyellow'}}>
+          <View style={{ width: "23%", backgroundColor: 'lightblue'}}>
               <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>Date</Text>
           </View>
-          <View style={{ width: "60%", backgroundColor: 'lightpink'}}>
+          <View style={{ width: "60%", backgroundColor: 'lightblue'}}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>Species</Text>
           </View>
-          <View style={{ width: "18%", backgroundColor: 'lavender'}}>
+          <View style={{ width: "18%", backgroundColor: 'lightblue'}}>
               <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>Location</Text>
           </View>
       </View>
@@ -113,13 +113,13 @@ function Log(props) {
         return(
           <TouchableWithoutFeedback onPress = {() => {setModalVisible(!modalVisible); setweight(20);setlength(22);setLocation(item.areaCode);setSpecies(item.species);setquanity(item.quantity)}}  key={i}>
           <View style={{ flexDirection: 'row', paddingBottom: 10 }}>
-            <View style={{ width: "22%", backgroundColor: 'lightyellow'}}>
+            <View style={{ width: "23%", backgroundColor: 'lightblue'}}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center'}}>{item.date}</Text>
             </View>
-            <View style={{ width: "60%", backgroundColor: 'lightpink'}}>
+            <View style={{ width: "60%", backgroundColor: 'lightblue'}}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>{item.species}</Text>
             </View>
-            <View style={{ width: "18%", backgroundColor: 'lavender'}}>
+            <View style={{ width: "18%", backgroundColor: 'lightblue'}}>
                 <Text style={{ fontSize: 16, fontWeight: 'bold' , textAlign: 'center'}}>{item.areaCode}</Text>
             </View>
         </View>
