@@ -1,4 +1,4 @@
-import {Modal, Text, View, TouchableWithoutFeedback, Button,StyleSheet} from 'react-native';
+import {Modal, Text, View, TouchableWithoutFeedback, Button, StyleSheet, ScrollView} from 'react-native';
 import React, {useEffect} from 'react';
 import Data from '../Data/Data.json';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -18,52 +18,55 @@ function Log(props) {
   const [location, setLocation] = React.useState("");
   const [species, setSpecies] = React.useState("");
   const [quanity, setquanity] = React.useState("");
-  const [waterTypeFilter, setwaterTypeFilter] = React.useState("freshWater");
-  const waterTypes = [
+  //const [waterTypeFilter, setwaterTypeFilter] = React.useState("freshWater");
+
+  /*const waterTypes = [
     { label: 'freshWater', value: 'freshWater' },
     { label: 'saltWater', value: 'saltWater' }
-  ];
+  ];*/
   const isFocused = useIsFocused();
   const [user, setUser] = React.useState('');
 
   
   useEffect(() => {
-    async function calcIndex() {
-      const realm = await Realm.open({
-        path: 'realm3',
-        schema: [UserSchema, EntrySchema],
-      });
-      var specificId;
-      try {
-        specificId = JSON.parse(await AsyncStorage.getItem('user'));
-      } catch (error) {
-        console.log(error);
-      }
-
-      if (specificId == user) {
-        return
-      }
-
-      const realm_user = realm
-        .objects('User')
-        .filtered('userName == $0', specificId)[0];
-    
-      
-
-      if(realm_user){
-        if (specificId != user) {
-          setEntries(realm_user.entries)
+      console.log("in");
+      async function calcIndex() {
+        const realm = await Realm.open({
+          path: 'realm3',
+          schema: [UserSchema, EntrySchema],
+        });
+        var specificId;
+        try {
+          specificId = JSON.parse(await AsyncStorage.getItem('user'));
+        } catch (error) {
+          console.log(error);
         }
-      }
+        console.log(specificId);
+        if (specificId == user) {
+          return
+        }
+
+        const realm_user = realm
+          .objects('User')
+          .filtered('userName == $0', specificId)[0];
+      
+        
+
+        if(realm_user){
+          if (specificId != user) {
+            setEntries(realm_user.entries)
+          }
+        }
     }
+    
     
     if (isFocused ) {
       calcIndex();
     } 
-  }, [entries, isFocused]);
+  }, [isFocused]);//entries
   
   return(
-   
+    <ScrollView style={styles.container}>
     <View style = {{paddingTop: 30, paddingLeft: 15 , paddingRight: 15}} >
       
         <View style = {{flexDirection: 'row', justifyContent: 'center',alignItems: 'center', height: "14%"}}>
@@ -163,6 +166,7 @@ function Log(props) {
       </View>
     </Modal>
   </View>
+  </ScrollView>
   );
 }
   export default Log;
