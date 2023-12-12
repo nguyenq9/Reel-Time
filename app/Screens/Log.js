@@ -66,10 +66,10 @@ function Log(props) {
   }, [isFocused]);//entries
   
   return(
-    <ScrollView style={styles.container}>
-    <View style = {{paddingTop: 30, paddingLeft: 15 , paddingRight: 15}} >
+    <ScrollView>
+    <View style = {{paddingTop: 30, paddingLeft: 15 , paddingRight: 15, height:"100%"}} >
       
-        <View style = {{flexDirection: 'row', justifyContent: 'center',alignItems: 'center', height: "14%"}}>
+        <View style = {{flexDirection: 'row', justifyContent: 'center',alignItems: 'center', height: 50}}>
             
           <View style = {styles.quortor}>
             <Text style = {{textAlign: 'center' }}>totalFish</Text>
@@ -82,7 +82,7 @@ function Log(props) {
           </View>
         </View> 
 
-        <View style = {{flexDirection: 'row', justifyContent: 'center',alignItems: 'center', height: "14%"}}>
+        <View style = {{flexDirection: 'row', justifyContent: 'center',alignItems: 'center', height: 50}}>
             
           <View style = {styles.quortor}>
           
