@@ -11,8 +11,8 @@ function FAQ(props) {
   const recordingURL = "https://wdfw.wa.gov/sites/default/files/2019-01/crc_instructions.pdf"; 
 
   // The two links below to change to point to the website once it is created. 
-  const apphelpURL   = "https://github.com/nguyenq9/Reel-Time";
-  const appFAQURL    = "https://github.com/nguyenq9/Reel-Time"; 
+  const apphelpURL   = "https://sites.google.com/view/reeltime/product";
+  const appFAQURL    = "https://sites.google.com/view/reeltime"; 
   
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
