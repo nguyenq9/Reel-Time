@@ -9,6 +9,7 @@ import {
   Button,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
 } from 'react-native';
 import {setNativeProps} from 'react-native-reanimated';
 import Realm from 'realm';
@@ -16,6 +17,8 @@ import {Alert} from 'react-native';
 import EntrySchema from '../EntrySchema';
 import UserSchema from '../UserSchema';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DatePicker from 'react-datepicker';
+import { useIsFocused } from '@react-navigation/native';
 
 function Add({navigation}) {
   const [freeId, SetFreeId] = useState(0);
@@ -31,6 +34,7 @@ function Add({navigation}) {
   const [areaCodeError, setAreaCodeError] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [selectedDate, setSelectedDate] = useState(new Date().toDateString());
+  const isFocused = useIsFocused();
 
   async function calcIndex() {
     const realm = await Realm.open({
@@ -56,10 +60,13 @@ function Add({navigation}) {
 
   useEffect(() => {
     calcIndex();
-    // getUser();
-  }, []);
-
-
+    if (!isFocused) {
+      setErrorMessage('');
+      setSpeciesError('');
+      setQuantityError('');
+      setAreaCodeError('');
+    }
+  }, [isFocused]);
 
   async function writingToRealm(date, species, quantity, areaCode) {
     console.log('Writing to Realm');
@@ -90,7 +97,7 @@ function Add({navigation}) {
         };
 
         // Push the new entry into the array
-        user.entries.push(entry);
+        user.entries.unshift(entry);
         console.log(user.entries);
         SetFreeId(freeId + 1);
       } else {
@@ -117,14 +124,13 @@ function Add({navigation}) {
       .filtered('userName == $0', specificId)[0];
 
     realm.write(() => {
-
       // Delete each entry
       user.entries.forEach(entry => {
         realm.delete(entry);
       });
 
       console.log('All entries deleted.');
-      console.log(user.entries)
+      console.log(user.entries);
     });
     SetFreeId(1);
   }
@@ -209,7 +215,7 @@ function Add({navigation}) {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 70 : 0}>
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 70 : 150}>
       <ScrollView style={styles.container}>
         <View>
           <Text style={styles.label}>Species *</Text>
@@ -274,6 +280,7 @@ function Add({navigation}) {
             onChangeText={onChangeDate}
             value={date}
             placeholder="mm/dd/yyyy"
+            // keyboardType='date'
           />
 
           {/* <Text style={styles.label}>Date</Text>
@@ -293,14 +300,17 @@ function Add({navigation}) {
               }}
             /> */}
         </View>
-        <Button
-          title="Submit"
-          onPress={() => {
-            console.log('Handling submit');
-            handleSubmit(date, text, number, areaCode, navigation);
-          }}
-          style={styles.submitButton}
-        />
+
+        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <Pressable
+            style={styles.button}
+            onPress={() => {
+              console.log('Handling submit');
+              handleSubmit(date, text, number, areaCode, navigation);
+            }}>
+            <Text style={styles.text}>Submit</Text>
+          </Pressable>
+        </View>
         {/* <Button
           title="Delete All Entries"
           onPress={() => {
@@ -312,14 +322,6 @@ function Add({navigation}) {
     </KeyboardAvoidingView>
   );
 }
-
-const datepickerstyle = StyleSheet.create({
-  height: 400,
-});
-
-const datepickerstylecollapsed = StyleSheet.create({
-  height: 0,
-});
 
 const styles = StyleSheet.create({
   container: {
@@ -337,6 +339,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginHorizontal: 12,
     marginTop: 8,
+    color: 'black',
   },
   dateInput: {
     height: 40,
@@ -353,12 +356,31 @@ const styles = StyleSheet.create({
     paddingTop: 10,
     width: 10,
     alignItems: 'center',
+    color: 'red',
   },
   errorText: {
     color: 'red',
     marginHorizontal: 12,
     marginTop: 7,
     // other styling such as margin, font size etc.
+  },
+  button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 4,
+    elevation: 3,
+    backgroundColor: '#1597DD',
+    justifyContent: 'center',
+    width: 150,
+  },
+  text: {
+    fontSize: 16,
+    lineHeight: 21,
+    fontWeight: 'bold',
+    letterSpacing: 0.25,
+    color: 'white',
   },
 });
 

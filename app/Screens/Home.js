@@ -1,7 +1,29 @@
 import * as React from "react";
 import { ImageBackground, Text, View, StyleSheet, Image } from "react-native";
+import { useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function Home() {
+  const [name, SetName] = React.useState('');
+  const isFocused = useIsFocused();
+
+  async function getName() {
+    var specificId;
+      try {
+        specificId = JSON.parse(await AsyncStorage.getItem('user'));
+      } catch (error) {
+        console.log(error);
+      }
+      SetName(specificId.toUpperCase());
+  }
+  
+  useEffect(() => {
+    if(isFocused) {
+      getName();
+    }
+  }, [isFocused]); //entries
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -11,7 +33,7 @@ function Home() {
         style={styles.image}
       >
         <Text style={styles.text}>REEL TIME</Text>
-        <Text style={styles.textBox}>Mike Wazowski {"\n"}
+        <Text style={styles.textBox}>{name}{"\n"}
           <Text style={styles.license}>{"\n"}Recreational Saltwater License Valid until: {"\n"}April 2024{"\n"}</Text>
           <Text style={styles.license}>{"\n"}Recreational Freshwater License Valid until: {"\n"}April 2024{"\n"}</Text>
           <Text style={styles.license}>{"\n"}Recreational Shellfish License Valid until: {"\n"}April 2024{"\n"}</Text>

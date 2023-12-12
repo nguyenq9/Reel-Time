@@ -84,7 +84,7 @@ function Login({navigation}) {
   }
 
   return (
-    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#add8e6'}}>
+    <View style={{flex: 1, alignItems: 'center', backgroundColor: '#FBF7F5'}}>
       <View>
         <Image
           style={{width: 250, height: 200}}
@@ -92,7 +92,7 @@ function Login({navigation}) {
         />
       </View>
       <View>
-        <Text style={{fontSize: 43, lineHeight: 60, color: 'white'}}>
+        <Text style={{fontSize: 43, lineHeight: 60, color: 'black'}}>
           {'Log In'}
         </Text>
       </View>
@@ -128,7 +128,7 @@ function Login({navigation}) {
           onPress={() => {
             console.log('Remember me'), setR(!pressedR);
           }}
-          color={pressedR ? '#ff0000' : '#ffffff'}
+          color={pressedR ? 'green' : 'black'}
         />
         <Text style={styles.text2}>{'Remember Me'}</Text>
       </View>
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     lineHeight: 21,
     fontWeight: 'bold',
     letterSpacing: 0.25,
-    color: 'white',
+    color: 'black',
   },
   button2: {
     alignItems: 'center',
