@@ -121,6 +121,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 32,
     borderRadius: 4,
+    width: 325,
     elevation: 3,
     backgroundColor: 'white',
   },

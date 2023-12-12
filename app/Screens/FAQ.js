@@ -1,33 +1,43 @@
+import { Link } from '@react-navigation/native';
 import * as React from 'react';
-import { Text, View, StyleSheet, Pressable } from 'react-native';
+import { Text, View, StyleSheet, Pressable, Linking } from 'react-native';
 
 function FAQ(props) {
-  const { onPress, properly = 'WA Fishing Reporting Guidelines', crab = 'WA Crab Report Guidelines', species = 'Species Identification Guide',
+  const { onPress, properly = 'WA Catch Reporting Guidelines', crab = 'Crab Identification Guide', species = 'Salmon Identification Guide',
           help = 'Application Help', faq = 'FAQ'  } = props;
+  
+  const salmonURL    = "https://wdfw.wa.gov/sites/default/files/publications/01384/2012-13_marine.pdf";  
+  const crabURL      = "https://wdfw.wa.gov/sites/default/files/2022-06/WA%20Sea%20Grant%20Crab%20Team%20ID%20guide%202022%20version.pdf";
+  const recordingURL = "https://wdfw.wa.gov/sites/default/files/2019-01/crc_instructions.pdf"; 
+
+  // The two links below to change to point to the website once it is created. 
+  const apphelpURL   = "https://github.com/nguyenq9/Reel-Time";
+  const appFAQURL    = "https://github.com/nguyenq9/Reel-Time"; 
+  
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <View style ={{marginBottom:20}}>
-        <Pressable style={styles.button} onPress={() => console.log("Fishing Guidelines")}>
+        <View style ={{marginBottom:40}}>
+        <Pressable style={styles.button} onPress={() => {console.log("Fishing Guidelines"); Linking.openURL(recordingURL);}}>
         <Text style={styles.text}>{properly}</Text>
         </Pressable>
         </View>    
-        <View style ={{marginBottom:20}}>
-        <Pressable style={styles.button} onPress={() => console.log("Crab Guidelines")}>
+        <View style ={{marginBottom:40}}>
+        <Pressable style={styles.button} onPress={() => {console.log("Crab Guidelines"); Linking.openURL(crabURL);}}>
         <Text style={styles.text}>{crab}</Text>
         </Pressable>
         </View>  
-        <View style ={{marginBottom:20}}>
-        <Pressable style={styles.button} onPress={() => console.log("Species Identification")}>
+        <View style ={{marginBottom:40}}>
+        <Pressable style={styles.button} onPress={() => {console.log("Species Identification"); Linking.openURL(salmonURL);}}>
         <Text style={styles.text}>{species}</Text>
         </Pressable>
         </View>        
-        <View style ={{marginBottom:20}}>
-        <Pressable style={styles.button} onPress={() => console.log("Application Help")}>
+        <View style ={{marginBottom:40}}>
+        <Pressable style={styles.button} onPress={() => {console.log("Application Help"); Linking.openURL(apphelpURL);}}>
         <Text style={styles.text}>{help}</Text>
         </Pressable>
         </View>    
-        <View style ={{marginBottom:20}}>
-        <Pressable style={styles.button} onPress={() => console.log("FAQ")}>
+        <View style ={{marginBottom:40}}>
+        <Pressable style={styles.button} onPress={() => {console.log("FAQ"); Linking.openURL(appFAQURL);}}>
         <Text style={styles.text}>{faq}</Text>
         </Pressable>
         </View>            
@@ -39,10 +49,11 @@ function FAQ(props) {
     button: {
       alignItems: 'center',
       justifyContent: 'center',
-      paddingVertical: 12,
+      paddingVertical: 20,
       paddingHorizontal: 32,
       borderRadius: 4,
       elevation: 3,
+      width: 350,
       backgroundColor: 'white',
     },
     text: {
