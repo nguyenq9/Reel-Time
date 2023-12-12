@@ -22,15 +22,7 @@ function Settings({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center'}}>
       <View style={{marginBottom: 10}}>
-        {/* <MaterialCommunityIcons 
-              name="account-circle" 
-              size={150} 
-              margin={10}
-              onPress={() => console.log("Change profile picture")}
-              color={"#213c96"}
-              // color={'white'}
-              // backgroundColor={'white'}
-              /> */}
+
         <Icon
           name="user-circle"
           size={150}

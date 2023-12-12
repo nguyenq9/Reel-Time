@@ -11,8 +11,6 @@ import FAQ from './Screens/FAQ';
 import Login from './Screens/Login';
 import Signup from './Screens/Signup';
 import Map from './Screens/Map';
-import Realm from 'realm';
-
 import { useEffect, useState } from 'react';
 import {
   SafeAreaProvider,
@@ -20,7 +18,7 @@ import {
   SafeAreaView,
 } from 'react-native-safe-area-context';
 import {Platform, NativeModules} from 'react-native';
-import { UserState } from 'realm-web';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const {StatusBarManager} = NativeModules;
 
 function MapScreen() {
@@ -121,7 +119,6 @@ function MyTabs() {
               style={{marginRight: 10, color: 'white'}}
               onPress={() => {
                 navigation.navigate('Settings');
-                console.log('LOOO');
               }}
             />
           ),
@@ -204,6 +201,7 @@ function MyTabs() {
               style={{marginLeft: 10, color: 'black'}}
               onPress={() => {
                 navigation.navigate('Home');
+                console.log("going home from log")
               }}
             />
           ),
@@ -258,11 +256,22 @@ function MyTabs() {
 }
 
 export default function App() {
+  const [user, setUser] = useState('');
+
+  async function getCurrUser () {
+    var specificId;
+    try {
+      specificId = JSON.parse(await AsyncStorage.getItem('user'));
+    } catch (error) {
+      console.log(error);
+    }
+    setUser(specificId);
+  }
 
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
       <NavigationContainer>
-        <MyTabs />
+        <MyTabs user={user}/>
       </NavigationContainer>
     </SafeAreaProvider>
   );
