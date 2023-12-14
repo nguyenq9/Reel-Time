@@ -20,6 +20,8 @@ function Login({navigation}) {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [verified, setVerified] = useState(false);
+  const app = new Realm.App({ id: "reelrealm-cxzss" });
+  const credentials = Realm.Credentials.anonymous();
 
   const storeUser = async value => {
     try {
@@ -29,10 +31,21 @@ function Login({navigation}) {
     }
   };
 
-  async function getAllUsers() {
+  async function getAllUsers() { 
+
+    const user = await app.logIn(credentials);
+    // try {
+    //   const user = await app.logIn(credentials);
+    // } catch(err) {
+    //   console.error("Failed to log in", err);
+    // }
+
     const realm = await Realm.open({
       path: 'realm3',
       schema: [UserSchema, EntrySchema],
+      sync: {
+         user, flexible: true  
+        },
     });
     const users = realm.objects('User');
     console.log(`list of users: ${users.map(u => u.userName)}`);
@@ -48,10 +61,29 @@ function Login({navigation}) {
       valid = false;
     }
 
+
+
     const realm = await Realm.open({
       path: 'realm3',
       schema: [UserSchema, EntrySchema],
+      // sync: {
+      //   user: app.currentUser,
+      //   partitionValue: "Clifford",  
+      // }
     });
+
+    // const synced = {
+    //   schema: [UserSchema, EntrySchema],
+    //   path: "copyLocalToSynced.realm", 
+    //   sync: {
+    //     user: app.currentUser, 
+    //     partitionValue: "myPartition",
+    //   }
+    // }
+    // realm.writeCopyTo(synced); 
+    // const syncedRealm = await Realm.open(synced); 
+
+
     const specificId = userName;
 
     const user = realm

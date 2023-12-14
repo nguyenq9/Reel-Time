@@ -20,6 +20,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DatePicker from 'react-datepicker';
 import { useIsFocused } from '@react-navigation/native';
 
+// const app = new Realm.App({ id: "reelrealm-cxzss" });
+// const credentials = Realm.Credentials.anonymous();
+// try {
+//   const user = await app.logIn(credentials);
+// } catch(err) {
+//   console.error("Failed to log in", err);
+// }
+
 function Add({navigation}) {
   const [freeId, SetFreeId] = useState(0);
   const [text, onChangeText] = useState('');
