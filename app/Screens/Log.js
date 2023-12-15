@@ -89,12 +89,12 @@ function Log(props) {
           }}>
           <View style={styles.quortor}>
             <Text style={{textAlign: 'center'}}>totalFish</Text>
-            <Text style={{textAlign: 'center'}}>11</Text>
+            <Text style={{textAlign: 'center'}}>4</Text>
           </View>
 
           <View style={styles.quortor}>
             <Text style={{textAlign: 'center'}}>speciesCaught</Text>
-            <Text style={{textAlign: 'center'}}>3</Text>
+            <Text style={{textAlign: 'center'}}>2</Text>
           </View>
         </View>
 
@@ -107,12 +107,12 @@ function Log(props) {
           }}>
           <View style={styles.quortor}>
             <Text style={{textAlign: 'center'}}>numberOfTrips</Text>
-            <Text style={{textAlign: 'center'}}>4</Text>
+            <Text style={{textAlign: 'center'}}>2</Text>
           </View>
 
           <View style={styles.quortor}>
             <Text style={{textAlign: 'center'}}>favoritAreaCode</Text>
-            <Text style={{textAlign: 'center'}}>7</Text>
+            <Text style={{textAlign: 'center'}}>9</Text>
           </View>
         </View>
 
@@ -240,12 +240,12 @@ function Log(props) {
               }}>
               <View style={styles.quortor}>
                 <Text style={{textAlign: 'center'}}>length</Text>
-                <Text style={{textAlign: 'center'}}>{length}</Text>
+                <Text style={{textAlign: 'center'}}>30</Text>
               </View>
 
               <View style={styles.quortor}>
                 <Text style={{textAlign: 'center'}}>weight</Text>
-                <Text style={{textAlign: 'center'}}>{weight}</Text>
+                <Text style={{textAlign: 'center'}}>45</Text>
               </View>
             </View>
             <View
